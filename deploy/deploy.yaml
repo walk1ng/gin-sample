@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         # you can replace image to yours
-      - image: ymian/gin-sample
+      - image: walk1ng/gin-sample
         imagePullPolicy: Always
         name: gin-sample
         ports:
@@ -29,9 +29,9 @@ spec:
           protocol: TCP
         resources:
           limits:
-            cpu: 1
+            cpu: 300m
           requests:
-            cpu: 1
+            cpu: 100m
       restartPolicy: Always
 ---
 apiVersion: v1

@@ -9,9 +9,9 @@ pipeline {
             metadata:
               labels:
                 app: jenkins-slave-pod
-              annotations:
-                k8s.aliyun.com/eci-cpu: 2
-                k8s.aliyun.com/eci-memory: 4Gi
+#              annotations:
+#                k8s.aliyun.com/eci-cpu: 2
+#                k8s.aliyun.com/eci-memory: 4Gi
             spec:
 #              nodeSelector:
 #                type: virtual-kubelet
@@ -20,12 +20,14 @@ pipeline {
 #                operator: Exists
               containers:
               - name: golang
-                image: golang:1.12
+                image: golang:1.14
+                imagePullPolicy: IfNotPresent
                 command:
                 - cat
                 tty: true
               - name: kaniko
                 image: registry.cn-beijing.aliyuncs.com/acs-sample/jenkins-slave-kaniko:0.6.0
+                imagePullPolicy: IfNotPresent
                 command:
                 - cat
                 tty: true
@@ -34,11 +36,13 @@ pipeline {
                   mountPath: /root/.docker
               - name: kubectl
                 image: roffe/kubectl:v1.13.2
+                imagePullPolicy: IfNotPresent
                 command:
                 - cat
                 tty: true
               - name: busybox
                 image: ymian/busybox
+                imagePullPolicy: IfNotPresent
                 command:
                 - cat
                 tty: true
@@ -69,7 +73,7 @@ pipeline {
             steps {
                 container("kaniko") {
                     // you can replace `--destination=ymian/gin-sample` to yours
-                    sh "kaniko -f `pwd`/Dockerfile -c `pwd` -d ymian/gin-sample"
+                    sh "kaniko -f `pwd`/Dockerfile -c `pwd` -d walk1ng/gin-sample"
                 }
             }
         }
@@ -110,6 +114,7 @@ pipeline {
                         ]
                     ) {
                         sh '''
+                        kubectl create -n test
                         kubectl apply -f `pwd`/deploy/deploy.yaml -n test
                         kubectl wait --for=condition=Ready pod -l app=gin-sample --timeout=60s -n test
                         '''
