@@ -107,7 +107,7 @@ pipeline {
             steps {
                 container("kubectl") {
                     sh '''
-                    kubectl create -n test
+                    kubectl create ns test
                     kubectl apply -f `pwd`/deploy/deploy.yaml -n test
                     kubectl wait --for=condition=Ready pod -l app=gin-sample --timeout=60s -n test
                     '''
