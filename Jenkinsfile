@@ -106,19 +106,11 @@ pipeline {
             }
             steps {
                 container("kubectl") {
-                    withKubeConfig(
-                        [
-                            // you can replace `mo` to yours
-                            credentialsId: 'test-env',
-                            serverUrl: 'https://kubernetes.default.svc.cluster.local'
-                        ]
-                    ) {
-                        sh '''
-                        kubectl create -n test
-                        kubectl apply -f `pwd`/deploy/deploy.yaml -n test
-                        kubectl wait --for=condition=Ready pod -l app=gin-sample --timeout=60s -n test
-                        '''
-                    }
+                    sh '''
+                    kubectl create -n test
+                    kubectl apply -f `pwd`/deploy/deploy.yaml -n test
+                    kubectl wait --for=condition=Ready pod -l app=gin-sample --timeout=60s -n test
+                    '''
                 }
             }
         }
